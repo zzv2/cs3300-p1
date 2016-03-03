@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/jquery-1.12.1.min.js"></script>
+  <script src="d3/d3.min.js" charset="utf-8"></script>
+  <title>Project 1</title>
+</head>
+<body>
+  <section id="fest" class="displays">
+         <div class="container">
+            <div class="row">
+               <div class="col5">
+                 <div class="info">
+                    <h2>Graph 1</h2>
+                    <br>
+                    <p>
+                       Our lovely circle graph
+                    </p>
+                 </div>
+                  <div class="display">
+                     <div id="graph1output"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+  <script src="js/circle.js"></script>
+<script>
+
+  for(i=0; i < 52; i++) {
+
+  }
+  var d = new Date("2015-03-25");
+
+  $.getJSON("2016-01-01 2016-01-07.json", function(json) {
+    console.log(json); // this will show the info it in firebug console
+  });
+
+  var url = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-01-01&end_date=2016-01-07&api_key=NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo";
+
+  $.ajax({
+    url: url,
+    success: handleResult
+  });
+
+  function handleResult(result){
+    if("copyright" in result) {
+      $("#copyright").text("Image Credits: " + result.copyright);
+    }
+    else {
+      $("#copyright").text("Image Credits: " + "Public Domain");
+    }
+
+    if(result.media_type == "video") {
+      $("#apod_img_id").css("display", "none");
+      $("#apod_vid_id").attr("src", result.url);
+    }
+    else {
+      $("#apod_vid_id").css("display", "none");
+      $("#apod_img_id").attr("src", result.url);
+    }
+    $("#reqObject").text(url);
+    $("#returnObject").text(JSON.stringify(result, null, 4));
+    $("#apod_explaination").text(result.explanation);
+    $("#apod_title").text(result.title);
+  }
+</script>
+  <pre id="returnObject"></pre>
+</body>
+</html>
