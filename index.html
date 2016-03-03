@@ -9,41 +9,81 @@
 </head>
 <body>
   <section id="fest" class="displays">
-         <div class="container">
-            <div class="row">
-               <div class="col5">
-                 <div class="info">
-                    <h2>Graph 1</h2>
-                    <br>
-                    <p>
-                       Our lovely circle graph
-                    </p>
-                 </div>
-                  <div class="display">
-                     <div id="graph1output"></div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-  <script src="js/circle.js"></script>
+     <div class="container">
+        <div class="row">
+           <div class="col5">
+             <div class="info">
+                <h2>Graph 1</h2>
+                <br>
+                <p>
+                   Our lovely circle graph
+                </p>
+             </div>
+              <div class="display">
+                 <div id="graph1output"></div>
+              </div>
+           </div>
+        </div>
+     </div>
+  </section>
 <script>
-
-  for(i=0; i < 52; i++) {
-
+  function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
-  var d = new Date("2015-03-25");
 
-  $.getJSON("2016-01-01 2016-01-07.json", function(json) {
-    console.log(json); // this will show the info it in firebug console
-  });
+  function dayofyear(d) {   // d is a Date object
+    var yn = d.getFullYear();
+    var mn = d.getMonth();
+    var dn = d.getDate();
+    var d1 = new Date(2016,0,1,12,0,0); // noon on Jan. 1
+    var d2 = new Date(yn,mn,dn,12,0,0); // noon on input date
+    var ddiff = Math.round((d2-d1)/864e5);
+    return ddiff+2;
+  }
+  
+  var data = [];
+  var unit = "feet";
+  function processJSON(json) {
+    $.each(json["near_earth_objects"], function(k1, v1) {
+      $.each(json["near_earth_objects"][k1], function(k2, v2) {
+        var obj = {};
+        obj.name = v2["name"];
+        var minDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_min"],
+            maxDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_max"];
+        obj.diameter = minDiameter+maxDiameter/2;
+        obj.date = dayofyear(new Date(k1));
+        obj.miss_distance = v2["close_approach_data"][0]["miss_distance"]["miles"];
+        obj.velocity = v2["close_approach_data"][0]["relative_velocity"]["miles_per_hour"];
+        data.push(obj);
+      });
+    });
+  }
 
-  var url = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-01-01&end_date=2016-01-07&api_key=NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo";
+  console.log("Loading Data...")
+  // var numWeeks = 53;
+  var numWeeks = 10;
+  for(var i=1; i<=numWeeks; i++) {
 
-  $.ajax({
+    var mydata = [];
+    $.ajax({
+      url: pad(i,2)+".json",
+      async: false,
+      dataType: 'json',
+      success: function (json) {
+        processJSON(json);
+      }
+    });
+  }
+  console.log("Done.")
+
+  // var url = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-01-01&end_date=2016-01-07&api_key=NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo";
+
+  /*$.ajax({
     url: url,
     success: handleResult
-  });
+  });*/
 
   function handleResult(result){
     if("copyright" in result) {
@@ -67,6 +107,214 @@
     $("#apod_title").text(result.title);
   }
 </script>
-  <pre id="returnObject"></pre>
+
+<script>
+
+  var width = 700,
+    height = 1000,
+    radius = Math.min(width, height) / 2 - 80;
+
+  var r = d3.scale.linear()
+    .domain([0, 1])
+    .range([0, radius]);
+
+  var line = d3.svg.line.radial()
+    .radius(function(d) {
+      return r(d[1]);
+    })
+    .angle(function(d) {
+      return -d[0] + Math.PI / 2;
+    });
+
+  var svg = d3.select("#graph1output").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + width / 2 + ")");
+
+  var gr = svg.append("g")
+    .attr("class", "r axis")
+    .selectAll("g")
+    .data(r.ticks(3).slice(1))
+    .enter().append("g");
+
+  gr.append("circle")
+    .attr("r", r);
+
+  var ga = svg.append("g")
+    .attr("class", "a axis")
+    .selectAll("g")
+    .data(d3.range(0, 360, 30))
+    .enter().append("g")
+    .attr("transform", function(d) {
+      return "rotate(" + -d + ")";
+    });
+
+  ga.append("line")
+    .attr("x2", radius);
+
+  ga.append("text")
+    .attr("x", radius + 20)
+    .attr("dy", ".35em")
+    .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
+    .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (radius + 20) + ",0)" : null; })
+    .text(function(d) {
+      var months = {0:"January", 30:"February", 60:"March", 90:"April", 120:"May", 150:"June",
+                    180:"July", 210:"August", 240:"September", 270:"October", 300:"November", 330:"Decemeber"};
+      return months[d]
+    });
+
+  var circleData = [];
+  var distanceData = [];
+  var diameterData = [];
+  var dateData = [];
+  var velocityData = [];
+
+  for (var i=0; i<data.length; i++) {
+    var obj = data[i];
+
+    velocityData.push(obj.velocity);
+    dateData.push(obj.date);
+    diameterData.push(obj.diameter);
+    distanceData.push(obj.miss_distance);
+    circleData.push(obj);
+  }
+
+  var line = d3.svg.line.radial()
+    .radius(function(d) {
+      return r(d[1]);
+    })
+    .angle(function(d) {
+      return -d[0] + Math.PI / 2;
+    });
+
+  function getMinMax(data) {
+    return [Math.min.apply(Math, data), Math.max.apply(Math, data)];
+  }
+
+  Array.prototype.max = function(){
+    return Math.max.apply(Math, this);
+  }
+
+  Array.prototype.min = function(){
+    return Math.min.apply(Math, this);
+  }
+
+  Array.prototype.min_max = function(){
+    return [Math.min.apply(Math, this), Math.max.apply(Math, this)];
+  }
+
+  var diameterScale = d3.scale.linear()
+    .domain(diameterData.min_max())
+    .range([2, 10]);
+
+  var circleInner = 10;
+  var circleOuter = 250;
+  var distScale = d3.scale.linear()
+    .domain([0,distanceData.max()])
+    .range([circleInner, circleOuter]);
+
+  var dateScale = d3.scale.linear()
+    .domain([0,365])
+    .range([0, 2*3.1415]);
+
+  var startColor = "#FFCCCF", stopColor = "#FF434E";
+  var colorScale = d3.scale.linear()
+    .domain(velocityData.min_max())
+    .range([startColor, stopColor]);
+
+  function getPolarCoords(r, theta) {
+    return [r*Math.cos(theta),-r*Math.sin(theta)]
+  }
+
+  svg.selectAll("point")
+    .data(circleData)
+    .enter()
+    .append("circle")
+    .attr("class", "point")
+    .attr("transform", function(d) {
+      // console.log(d.point);
+      var r = distScale(d.miss_distance), theta = dateScale(d.date);
+      var coords = getPolarCoords(r, theta);
+      // console.log(coords);
+      return "translate(" + coords + ")"
+    })
+    .attr( 'r', function(d) { return diameterScale(d.diameter) })
+    .attr("fill", function(d) { return d ? colorScale(d.velocity) : "lightgray"});
+
+    var distAxis = d3.svg.axis()
+      .scale(distScale)
+      .orient('bottom')
+      .ticks(4, ",.1s")
+      .tickSize(6, 0);
+
+    var distAxis = svg.append('g')
+      .attr('class', 'distAxis')
+      .attr("transform", "translate(0,0)")
+      .call(distAxis);
+
+    distAxis.append("text")
+      .attr("class", "label")
+      .attr("x", circleOuter/2)
+      .attr("y", 40)
+      .attr("font-size", 14)
+      .attr("fill", "black")
+      .style("text-anchor", "middle")
+      .text("Distance from Earth (ft)");
+    
+    
+    // color legend
+    var gradient = svg.append("defs")
+      .append("linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%")
+        .attr("spreadMethod", "pad");
+
+    gradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", startColor)
+      .attr("stop-opacity", 1);
+
+    gradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", stopColor)
+      .attr("stop-opacity", 1);
+
+    var colorAxisScale = d3.scale.linear()
+      .domain(velocityData.min_max())
+      .range([0, width / 2]);
+
+    var colorAxis = d3.svg.axis()
+      .scale(colorAxisScale)
+      .orient('bottom')
+      .ticks(5, ",.1s")
+      // .tickSize(20, 1);
+
+    var colorLegend = svg.append('g')
+      .attr('class', 'colorAxis')
+      .attr("transform", "translate(" + -width / 4 + "," + width*.6  + ")")
+      .call(colorAxis);
+
+    colorLegend.append("rect")
+      .attr("class", "legend")
+      .attr("width", width/2)
+      .attr("height", height/32)
+      .attr("transform", "translate(0,-40)")
+      .style("fill", "url(#gradient)");;
+
+    colorLegend.append("text")
+          .attr("class", "label")
+          .attr("x", width/4)
+          .attr("y", 50)
+          .attr("font-size", 14)
+          .attr("fill", "black")
+          .style("text-anchor", "middle")
+          .text("Relative Velocity (mph)");
+
+
+</script>
 </body>
 </html>
