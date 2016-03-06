@@ -20,7 +20,10 @@
                 </p>
              </div>
               <div class="display">
-                 <div id="graph1output"></div>
+                <div id="graph1output"></div>
+              </div>
+              <div class="display">
+                <div id="graph2output"></div>
               </div>
            </div>
         </div>
@@ -44,6 +47,10 @@
   }
 
   var data = [];
+  var counts = {};
+  for (var i=1; i<=53; i++) {
+    counts[i] = [];
+  }
   var unit = "feet";
   function processJSON(json) {
     console.log(json);
@@ -55,6 +62,8 @@
             maxDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_max"];
         obj.diameter = minDiameter+maxDiameter/2;
         obj.date = dayofyear(new Date(k1));
+        var week = Math.ceil((obj.date / 371)*53);
+        counts[week].push(v2["close_approach_data"][0]["miss_distance"]["miles"]);
         obj.miss_distance = v2["close_approach_data"][0]["miss_distance"]["miles"];
         obj.velocity = v2["close_approach_data"][0]["relative_velocity"]["miles_per_hour"];
         data.push(obj);
@@ -77,6 +86,7 @@
     });
   }
   console.log("Done.")
+  console.log(data);
 
   // var url = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-01-01&end_date=2016-01-07&api_key=NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo";
 
@@ -333,5 +343,36 @@
           .attr("fill", "#A2FF5E")
 
 </script>
+
+<script>
+  var width = 800, height = 1000;
+  var padding_left = 50;
+  var padding_top = 50;
+
+  var svg = d3.select("#graph2output").append("svg")
+    .attr("width", width+200)
+    .attr("height", height)
+    .append("g")
+    .attr("fill", "white");
+
+  var xScale = d3.scale.linear().domain([0, 53]).range([padding_left, width]);
+  var yScale = d3.scale.linear().domain([0, 60000000]).range([height - padding_top, 0]);
+
+  for (var key in counts) {
+    for (var distance in counts[key]) {
+      if (distance != "max" && distance != "min" && distance != "min_max") {
+        console.log(counts[key][distance]);
+        svg.append("rect")
+        .attr("x", xScale(key))
+        .attr("y", yScale(counts[key][distance]))
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", "red")
+      }
+    }
+  }
+
+</script>
+
 </body>
 </html>
