@@ -500,7 +500,7 @@ makeGraph("#graph3output", fiveMilData, 6000000)
       if (distance != "max" && distance != "min" && distance != "min_max") {
         svg.append("rect")
         .attr("x", xScale(key) - 5)
-        .attr("y", yScale(distance))
+        .attr("y", yScale(distance) - 5)
         .attr("width", 10)
         .attr("height", 10)
         .attr("fill", colorScale(counts[key][distance]))
