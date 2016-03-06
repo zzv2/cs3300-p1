@@ -79,7 +79,7 @@
   // used for frequency data in graph 2
   var counts = {};
   for (var i=1; i<=53; i++) {
-    counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
+    counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0};
   }
 
   // code for following function taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
@@ -166,7 +166,6 @@
       }
     });
   }
-  console.log(counts);
   console.log("Done.")
   console.log(data);
 
