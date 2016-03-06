@@ -430,7 +430,10 @@ footer p {
 }
 
 #fest {
-    background: #122840;
+    /*background: #2F4050;*/
+    /*background: #000000; //theme1*/
+    background-image: url('../img/outer-space.jpg');
+    /*http://wallpaperstock.net/stars-in-outer-space_wallpapers_34707_1920x1080.jpg*/
 }
 
 #fest h2 {
@@ -565,15 +568,24 @@ header h2 {
 .axis line,
 .axis circle {
   fill: none;
-  stroke: #b0e8e8;
+  stroke: #28D1D5;
   stroke-dasharray: 1,4;
 }
 
 .axis :last-of-type circle {
-  stroke: #1D447E;
-  stroke-width: 5;
+  stroke: #56b6c2;
+  stroke-width: 28;
   stroke-dasharray: none;
+  /*fill: #000000;*/
 }
+
+.axis :nth-of-type(2) circle {
+  background-color: #000000;
+}
+/*
+:last-of-type circle {
+  fill: #000000;
+}*/
 
 .line {
   fill: none;
@@ -582,5 +594,14 @@ header h2 {
 }
 
 text {
-  stroke: #CACACA;
+  stroke: #327780;
+  stroke-width: 1;
+}
+
+.colorAxis line, .colorAxis path, .distanceLabel, .tick text {
+  stroke: #A2FF5E !important;
+}
+
+circle {
+  background-color: #000000;
 }
