@@ -52,6 +52,7 @@
     counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
   }
 
+  // code for following function taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
   (function() {
   /**
    * Decimal adjustment of a number.
@@ -396,8 +397,9 @@
 
 <script>
   var width = 800, height = 1000;
-  var padding_left = 50;
+  var padding_left = 80;
   var padding_top = 50;
+  var padding_bottom = 300;
 
   var svg = d3.select("#graph2output").append("svg")
     .attr("width", width+200)
@@ -405,10 +407,10 @@
     .append("g")
     .attr("fill", "white");
 
-  var xScale = d3.scale.linear().domain([0, 53]).range([padding_left, width]);
-  var yScale = d3.scale.linear().domain([0, 60000000]).range([height - padding_top, 0]);
+  var xScale = d3.scale.linear().domain([0, 54]).range([padding_left, width]);
+  var yScale = d3.scale.linear().domain([0, 65000000]).range([height - padding_top, padding_bottom]);
 
-  var xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(5);
+  var xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(26);
   var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
 
   svg.append("g").attr("transform", "translate(0," + (height - padding_top) + ")").attr("class", "axis")
@@ -416,14 +418,66 @@
   svg.append("g").attr("transform", "translate(" + padding_left + ",0)").attr("class", "axis")
   .call(yAxis);
 
+  // color legend
+  var gradient = svg.append("defs")
+    .append("linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "0%")
+      .attr("spreadMethod", "pad");
+
+  gradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", startColor)
+    .attr("stop-opacity", 1);
+
+  gradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", stopColor)
+    .attr("stop-opacity", 1);
+
+
+  var colorAxisScale = d3.scale.linear()
+    .domain([0, 60000000])
+    .range([0, width / 2]);
+
+  var colorAxis = d3.svg.axis()
+    .scale(colorAxisScale)
+    .orient('bottom')
+    .ticks(5, ",.1s")
+    .tickSize(10, 1);
+
+  var colorLegend = svg.append('g')
+    .attr('class', 'colorAxis')
+    .attr("transform", "translate(" + width / 4 + "," + 900 + ")")
+    .call(colorAxis)
+
+  colorLegend.append("rect")
+    .attr("class", "legend")
+    .attr("width", width/2)
+    .attr("height", height/32)
+    .attr("transform", "translate(0,-40)")
+    .style("fill", "url(#gradient)");
+
+  colorLegend.append("text")
+        .attr("class", "label")
+        .attr("x", width/4)
+        .attr("y", 50)
+        .attr("font-size", 14)
+        .attr("fill", "none")
+        .style("text-anchor", "middle")
+        .text("Frequency");
+
   for (var key in counts) {
     for (var distance in counts[key]) {
       if (distance != "max" && distance != "min" && distance != "min_max") {
         svg.append("rect")
-        .attr("x", xScale(key))
+        .attr("x", xScale(key) - 5)
         .attr("y", yScale(distance))
         .attr("width", 10)
-        .attr("height", (height / 7) + 10)
+        .attr("height", 10)
         .attr("fill", "red");
         console.log(distance);
       }
