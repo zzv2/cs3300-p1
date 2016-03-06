@@ -166,6 +166,7 @@
       }
     });
   }
+  console.log(counts);
   console.log("Done.")
   console.log(data);
 
@@ -416,8 +417,8 @@ makeGraph("#graph3output", fiveMilData, 6000000)
 </script>
 
 <script>
-  var width = 800, height = 1000;
-  var padding_left = 80;
+  var width = 900, height = 1000;
+  var padding_left = 180;
   var padding_top = 50;
   var padding_bottom = 300;
 
@@ -440,7 +441,7 @@ makeGraph("#graph3output", fiveMilData, 6000000)
 
   var startColor = "#FFF5AB", stopColor = "#E80010";
   var colorScale = d3.scale.linear()
-    .domain([0, 40])
+    .domain([0, 35])
     .range([startColor, stopColor]);
 
   // color legend
@@ -476,7 +477,7 @@ makeGraph("#graph3output", fiveMilData, 6000000)
 
   var colorLegend = svg.append('g')
     .attr('class', 'colorAxis')
-    .attr("transform", "translate(" + 240 + "," + 825 + ")")
+    .attr("transform", "translate(" + 290 + "," + 825 + ")")
     .call(colorAxis)
 
   colorLegend.append("rect")
@@ -508,6 +509,21 @@ makeGraph("#graph3output", fiveMilData, 6000000)
       }
     }
   }
+  svg.append("text")
+  .attr("x", 510)
+  .attr("y", 760)
+  .attr("text-anchor", "middle")
+  .attr("class", "distanceLabel")
+  .attr("font-size", 20)
+  .text("Week");
+
+  svg.append("text")
+  .attr("x", 0)
+  .attr("y", 325)
+  .attr("alignment-baseline", "central")
+  .attr("class", "distanceLabel")
+  .attr("font-size", 20)
+  .text("Distance");
 </script>
 
 </body>
