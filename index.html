@@ -485,8 +485,9 @@
         .attr("x", xScale(key) - 5)
         .attr("y", yScale(distance))
         .attr("width", 10)
-        .attr("height", 10)
-        .attr("fill", colorScale(counts[key][distance]));
+        .attr("height", 100)
+        .attr("fill", colorScale(counts[key][distance]))
+        .attr("transform", "translate(" + 0 + "," + -101 + ")");
       }
     }
   }
