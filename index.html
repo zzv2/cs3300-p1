@@ -408,12 +408,12 @@
     .attr("fill", "white");
 
   var xScale = d3.scale.linear().domain([0, 54]).range([padding_left, width]);
-  var yScale = d3.scale.linear().domain([0, 65000000]).range([height - padding_top, padding_bottom]);
+  var yScale = d3.scale.linear().domain([0, 65000000]).range([height - padding_bottom, padding_top]);
 
   var xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(26);
   var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
 
-  svg.append("g").attr("transform", "translate(0," + (height - padding_top) + ")").attr("class", "axis")
+  svg.append("g").attr("transform", "translate(0," + (height - padding_bottom) + ")").attr("class", "axis")
   .call(xAxis);
   svg.append("g").attr("transform", "translate(" + padding_left + ",0)").attr("class", "axis")
   .call(yAxis);
@@ -451,7 +451,7 @@
 
   var colorLegend = svg.append('g')
     .attr('class', 'colorAxis')
-    .attr("transform", "translate(" + width / 4 + "," + 900 + ")")
+    .attr("transform", "translate(" + 240 + "," + 850 + ")")
     .call(colorAxis)
 
   colorLegend.append("rect")
