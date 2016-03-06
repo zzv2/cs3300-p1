@@ -49,8 +49,57 @@
   var data = [];
   var counts = {};
   for (var i=1; i<=53; i++) {
-    counts[i] = [];
+    counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
   }
+
+  (function() {
+  /**
+   * Decimal adjustment of a number.
+   *
+   * @param {String}  type  The type of adjustment.
+   * @param {Number}  value The number.
+   * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+   * @returns {Number} The adjusted value.
+   */
+  function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+      return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+      Math.round10 = function(value, exp) {
+        return decimalAdjust('round', value, exp);
+      };
+    }
+    // Decimal floor
+    if (!Math.floor10) {
+      Math.floor10 = function(value, exp) {
+        return decimalAdjust('floor', value, exp);
+      };
+    }
+    // Decimal ceil
+    if (!Math.ceil10) {
+      Math.ceil10 = function(value, exp) {
+        return decimalAdjust('ceil', value, exp);
+      };
+    }
+  })();
+
   var unit = "feet";
   function processJSON(json) {
     console.log(json);
@@ -63,7 +112,8 @@
         obj.diameter = minDiameter+maxDiameter/2;
         obj.date = dayofyear(new Date(k1));
         var week = Math.ceil((obj.date / 371)*53);
-        counts[week].push(v2["close_approach_data"][0]["miss_distance"]["miles"]);
+        var roundedDistance = Math.floor10(v2["close_approach_data"][0]["miss_distance"]["miles"], 7);
+        counts[week][roundedDistance] += 1;
         obj.miss_distance = v2["close_approach_data"][0]["miss_distance"]["miles"];
         obj.velocity = v2["close_approach_data"][0]["relative_velocity"]["miles_per_hour"];
         data.push(obj);
@@ -358,16 +408,24 @@
   var xScale = d3.scale.linear().domain([0, 53]).range([padding_left, width]);
   var yScale = d3.scale.linear().domain([0, 60000000]).range([height - padding_top, 0]);
 
+  var xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(5);
+  var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
+
+  svg.append("g").attr("transform", "translate(0," + (height - padding_top) + ")").attr("class", "axis")
+  .call(xAxis);
+  svg.append("g").attr("transform", "translate(" + padding_left + ",0)").attr("class", "axis")
+  .call(yAxis);
+
   for (var key in counts) {
     for (var distance in counts[key]) {
       if (distance != "max" && distance != "min" && distance != "min_max") {
-        console.log(counts[key][distance]);
         svg.append("rect")
         .attr("x", xScale(key))
-        .attr("y", yScale(counts[key][distance]))
+        .attr("y", yScale(distance))
         .attr("width", 10)
-        .attr("height", 10)
-        .attr("fill", "red")
+        .attr("height", (height / 7) + 10)
+        .attr("fill", "red");
+        console.log(distance);
       }
     }
   }
