@@ -47,6 +47,9 @@
   }
 
   var data = [];
+  // dictionary 'counts' has keys 0-53
+  // values of 'counts' are dictionaries which hold counts of distance
+  // used for frequency data in graph 2
   var counts = {};
   for (var i=1; i<=53; i++) {
     counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
@@ -418,6 +421,11 @@
   svg.append("g").attr("transform", "translate(" + padding_left + ",0)").attr("class", "axis")
   .call(yAxis);
 
+  var startColor = "#FFF5AB", stopColor = "#E80010";
+  var colorScale = d3.scale.linear()
+    .domain([0, 40])
+    .range([startColor, stopColor]);
+
   // color legend
   var gradient = svg.append("defs")
     .append("linearGradient")
@@ -440,7 +448,7 @@
 
 
   var colorAxisScale = d3.scale.linear()
-    .domain([0, 60000000])
+    .domain([0, 40])
     .range([0, width / 2]);
 
   var colorAxis = d3.svg.axis()
@@ -451,7 +459,7 @@
 
   var colorLegend = svg.append('g')
     .attr('class', 'colorAxis')
-    .attr("transform", "translate(" + 240 + "," + 850 + ")")
+    .attr("transform", "translate(" + 240 + "," + 825 + ")")
     .call(colorAxis)
 
   colorLegend.append("rect")
@@ -478,8 +486,7 @@
         .attr("y", yScale(distance))
         .attr("width", 10)
         .attr("height", 10)
-        .attr("fill", "red");
-        console.log(distance);
+        .attr("fill", colorScale(counts[key][distance]));
       }
     }
   }
