@@ -20,7 +20,7 @@ body {
     font-size: 14px;
     line-height: 1.42857143;
     color: #545454;
-    background-color: #fff;
+    background-image: url('../img/outer-space.jpg');
 }
 
 p {
@@ -429,12 +429,12 @@ footer p {
     display: none;
 }
 
-#fest {
+/*#fest {*/
     /*background: #2F4050;*/
     /*background: #000000; //theme1*/
-    background-image: url('../img/outer-space.jpg');
+    /*background-image: url('../img/outer-space.jpg');*/
     /*http://wallpaperstock.net/stars-in-outer-space_wallpapers_34707_1920x1080.jpg*/
-}
+/*}*/
 
 #fest h2 {
     color: #AFAFAF;
