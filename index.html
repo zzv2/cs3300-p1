@@ -322,71 +322,85 @@ function makeGraph(div, data, maxDist) {
     })
     .attr( 'r', function(d) { return diameterScale(d.diameter) })
     .attr("fill", function(d) { return d ? colorScale(d.velocity) : "lightgray"});
-    var distAxis = d3.svg.axis()
-      .scale(distScale)
-      .orient('bottom')
-      .ticks(5, ",.1s")
-      .tickSize(6, 0);
-    var distAxis = svg.append('g')
-      .attr('class', 'distanceLabel')
-      .attr("transform", "translate(0,0)")
-      .call(distAxis);
-    distAxis.append("text")
-      .attr("class", "distanceLabel")
-      .attr("x", circleOuter + 170)
-      .attr("y", 5)
-      .attr("font-size", 14)
-      .attr("fill", "black")
-      .style("text-anchor", "middle")
-      .text("Distance from Earth (ft)");
-    // color legend
-    var gradient = svg.append("defs")
-      .append("linearGradient")
-        .attr("id", "gradient")
-        .attr("x1", "0%")
-        .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "0%")
-        .attr("spreadMethod", "pad");
-    gradient.append("stop")
-      .attr("offset", "0%")
-      .attr("stop-color", startColor)
-      .attr("stop-opacity", 1);
-    gradient.append("stop")
-      .attr("offset", "100%")
-      .attr("stop-color", stopColor)
-      .attr("stop-opacity", 1);
-    var colorAxisScale = d3.scale.linear()
-      .domain([0, 100000])
-      .range([0, width / 2]);
-    var colorAxis = d3.svg.axis()
-      .scale(colorAxisScale)
-      .orient('bottom')
-      .ticks(5, ",.1s")
-      .tickSize(10, 1);
-    var colorLegend = svg.append('g')
-      .attr('class', 'colorAxis')
-      .attr("transform", "translate(" + -width / 4 + "," + width*0.5  + ")")
-      .call(colorAxis)
-    colorLegend.append("rect")
-      .attr("class", "legend")
-      .attr("width", width/2)
-      .attr("height", height/32)
-      .attr("transform", "translate(0,-40)")
-      .style("fill", "url(#gradient)");
-    colorLegend.append("text")
-          .attr("class", "label")
-          .attr("x", width/4)
-          .attr("y", 50)
-          .attr("font-size", 14)
-          .attr("fill", "none")
-          .style("text-anchor", "middle")
-          .text("Relative Velocity (mph)");
-          svg.append("circle")
-          .attr("r", "5")
-          .attr("cx", "0")
-          .attr("cy", "0")
-          .attr("fill", "#A2FF5E")
+
+  var distAxis = d3.svg.axis()
+    .scale(distScale)
+    .orient('bottom')
+    .ticks(5, ",.1s")
+    .tickSize(6, 0);
+
+  var distAxis = svg.append('g')
+    .attr('class', 'distanceLabel')
+    .attr("transform", "translate(0,0)")
+    .call(distAxis);
+
+  distAxis.append("text")
+    .attr("class", "distanceLabel")
+    .attr("x", circleOuter + 170)
+    .attr("y", 5)
+    .attr("font-size", 14)
+    .attr("fill", "black")
+    .style("text-anchor", "middle")
+    .text("Distance from Earth ()");
+
+
+  // color legend
+  var gradient = svg.append("defs")
+    .append("linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "0%")
+      .attr("spreadMethod", "pad");
+
+  gradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", startColor)
+    .attr("stop-opacity", 1);
+
+  gradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", stopColor)
+    .attr("stop-opacity", 1);
+
+
+  var colorAxisScale = d3.scale.linear()
+    .domain([0, 100000])
+    .range([0, width / 2]);
+
+  var colorAxis = d3.svg.axis()
+    .scale(colorAxisScale)
+    .orient('bottom')
+    .ticks(5, ",.1s")
+    .tickSize(10, 1);
+
+  var colorLegend = svg.append('g')
+    .attr('class', 'colorAxis')
+    .attr("transform", "translate(" + -width / 4 + "," + width*0.5  + ")")
+    .call(colorAxis)
+
+  colorLegend.append("rect")
+    .attr("class", "legend")
+    .attr("width", width/2)
+    .attr("height", height/32)
+    .attr("transform", "translate(0,-40)")
+    .style("fill", "url(#gradient)");
+
+  colorLegend.append("text")
+    .attr("class", "label")
+    .attr("x", width/4)
+    .attr("y", 50)
+    .attr("font-size", 14)
+    .attr("fill", "none")
+    .style("text-anchor", "middle")
+    .text("Relative Velocity (mph)");
+
+    svg.append("circle")
+    .attr("r", "5")
+    .attr("cx", "0")
+    .attr("cy", "0")
+    .attr("fill", "#A2FF5E")
 }
 makeGraph("#graph1output", data, 60000000)
 makeGraph("#graph2output", tenMilData, 15000000)
@@ -413,6 +427,35 @@ makeGraph("#graph5output", oneMilData, 1500000)
   .call(xAxis);
   svg.append("g").attr("transform", "translate(" + padding_left + ",0)").attr("class", "axis")
   .call(yAxis);
+
+  var xScale = d3.scale.linear()
+    .domain([0, 54])
+    .range([padding_left, width]);
+
+  var yScale = d3.scale.linear()
+    .domain([0, 65000000])
+    .range([height - padding_bottom, padding_top]);
+
+  var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom")
+    .ticks(26);
+
+  var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left")
+    .ticks(5);
+
+  svg.append("g")
+    .attr("transform", "translate(0," + (height - padding_bottom) + ")")
+    .attr("class", "axis")
+    .call(xAxis);
+
+  svg.append("g")
+    .attr("transform", "translate(" + padding_left + ",0)")
+    .attr("class", "axis")
+    .call(yAxis);
+
   var startColor = "#FFF5AB", stopColor = "#E80010";
   var colorScale = d3.scale.linear()
     .domain([0, 35])
@@ -452,14 +495,16 @@ makeGraph("#graph5output", oneMilData, 1500000)
     .attr("height", height/32)
     .attr("transform", "translate(0,-40)")
     .style("fill", "url(#gradient)");
+
   colorLegend.append("text")
-        .attr("class", "label")
-        .attr("x", width/4)
-        .attr("y", 50)
-        .attr("font-size", 14)
-        .attr("fill", "none")
-        .style("text-anchor", "middle")
-        .text("Frequency");
+    .attr("class", "label")
+    .attr("x", width/4)
+    .attr("y", 50)
+    .attr("font-size", 14)
+    .attr("fill", "none")
+    .style("text-anchor", "middle")
+    .text("Frequency");
+
   for (var key in counts) {
     for (var distance in counts[key]) {
       if (distance != "max" && distance != "min" && distance != "min_max") {
@@ -474,28 +519,29 @@ makeGraph("#graph5output", oneMilData, 1500000)
     }
   }
   svg.append("text")
-  .attr("x", 490)
-  .attr("y", 760)
-  .attr("text-anchor", "middle")
-  .attr("class", "distanceLabel")
-  .attr("font-size", 20)
-  .text("Week");
+    .attr("x", 490)
+    .attr("y", 760)
+    .attr("text-anchor", "middle")
+    .attr("class", "distanceLabel")
+    .attr("font-size", 20)
+    .text("Week");
+
   svg.append("text")
-  .attr("x", 0)
-  .attr("y", 325)
-  .attr("alignment-baseline", "central")
-  .attr("class", "distanceLabel")
-  .attr("font-size", 20)
-  .text("Distance");
+    .attr("x", 0)
+    .attr("y", 325)
+    .attr("alignment-baseline", "central")
+    .attr("class", "distanceLabel")
+    .attr("font-size", 20)
+    .text("Distance");
+
   svg.append("text")
-  .attr("x", 15)
-  .attr("y", 350)
-  .attr("alignment-baseline", "central")
-  .attr("class", "distanceLabel")
-  .attr("font-size", 20)
-  .text("(feet)");
+    .attr("x", 15)
+    .attr("y", 350)
+    .attr("alignment-baseline", "central")
+    .attr("class", "distanceLabel")
+    .attr("font-size", 20)
+    .text("(feet)");
 </script>
 
 </body>
 </html>
-Status API Training Shop Blog About Pricing
