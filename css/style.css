@@ -21,6 +21,9 @@ body {
     line-height: 1.42857143;
     color: #545454;
     background-image: url('../img/outer-space.jpg');
+    /*
+    http://www.hdwallpaperscool.com/wp-content/uploads/2015/04/outer-space-stars-high-quality-wallpaper-for-desktop-background-download-stars-images.jpg
+    */
 }
 
 p {
@@ -605,3 +608,81 @@ text {
 circle {
   background-color: #000000;
 }
+
+
+/*heat map css*/
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.label{
+  font-family: Verdana;
+}
+
+div#BACchart{
+  text-align: center;
+}
+
+div#genderChart{
+  text-align: center;
+}
+
+.graphTitle{
+  font-family: Verdana;
+  width: 800px;
+  padding-left: 100px;
+  padding-top: 50px;
+
+}
+
+
+div#Title{
+  font-family: Verdana;
+  text-align: center;
+  color: #54278f;
+}
+
+p{
+  font-size: 14;
+}
+
+  .my-legend .legend-scale ul {
+    margin: 0;
+    padding: 0;
+    float: left;
+    list-style: none;
+    }
+  .my-legend .legend-scale ul li {
+    display: block;
+    float: left;
+    width: 50px;
+    margin-bottom: 6px;
+    text-align: center;
+    font-size: 80%;
+    list-style: none;
+    }
+  .my-legend ul.legend-labels li span {
+    outline-style: solid;
+    outline-width: 1px;
+    display: block;
+    float: left;
+    height: 15px;
+    width: 50px;
+    }
+  .my-legend .legend-source {
+    font-size: 70%;
+    color: #999;
+    clear: both;
+    }
+  .my-legend a {
+    color: #777;
+    }
+
+  .my-legend {
+  margin-top:30px;
+  margin-left: 600px;
+
+  }
