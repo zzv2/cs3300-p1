@@ -95,7 +95,7 @@ var data = [],  //will store all of the data returned
   // used for frequency data in graph 2
   var counts = {};
   for (var i=1; i<=53; i++) {
-    counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
+    counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0};
   }
 
   //***DESCRIBE***
@@ -182,7 +182,6 @@ var data = [],  //will store all of the data returned
       }
     });
   }
-  console.log(counts);
   console.log("Done.")
   console.log(data);
 
@@ -433,7 +432,7 @@ makeGraph("#graph4output", fiveMilData, 1000000)
 </script>
 
 <script>
-  var width = 900, height = 1000;
+  var width = 800, height = 1000;
   var padding_left = 180;
   var padding_top = 50;
   var padding_bottom = 300;
@@ -517,7 +516,7 @@ makeGraph("#graph4output", fiveMilData, 1000000)
       if (distance != "max" && distance != "min" && distance != "min_max") {
         svg.append("rect")
         .attr("x", xScale(key) - 5)
-        .attr("y", yScale(distance))
+        .attr("y", yScale(distance) - 5)
         .attr("width", 10)
         .attr("height", 10)
         .attr("fill", colorScale(counts[key][distance]))
@@ -527,7 +526,7 @@ makeGraph("#graph4output", fiveMilData, 1000000)
   }
 
   svg.append("text")
-  .attr("x", 510)
+  .attr("x", 490)
   .attr("y", 760)
   .attr("text-anchor", "middle")
   .attr("class", "distanceLabel")
@@ -541,6 +540,14 @@ makeGraph("#graph4output", fiveMilData, 1000000)
   .attr("class", "distanceLabel")
   .attr("font-size", 20)
   .text("Distance");
+
+  svg.append("text")
+  .attr("x", 15)
+  .attr("y", 350)
+  .attr("alignment-baseline", "central")
+  .attr("class", "distanceLabel")
+  .attr("font-size", 20)
+  .text("(feet)");
 </script>
 
 </body>
