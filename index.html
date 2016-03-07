@@ -43,26 +43,43 @@
                 <div id="graph3output"></div>
               </div>
               <div class="info">
-                 <h2>Graph 4</h2>
+                 <h2>Graph 3</h2>
+                 <br>
+                 <p>
+                    Our lovely fourth circle graph
+                 </p>
+              </div>
+              <div class="display">
+                <div id="graph4output"></div>
+              </div>
+              <div class="info">
+                 <h2>Graph 5</h2>
                  <br>
                  <p>
                     Our lovely Heat Map
                  </p>
               </div>
               <div class="display">
-                <div id="graph4output"></div>
+                <div id="graph5output"></div>
               </div>
            </div>
         </div>
      </div>
   </section>
 <script>
+//Initialize global variables
+var data = [],  //will store all of the data returned
+    tenMilData = [], //stores data representing asteroids with a distance of 10 million or less
+    fiveMilData =[]; //stores data representing asteroids with a distance of 5 million or less
+
+//***Describe***
   function pad(n, width, z) {
     z = z || '0';
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
 
+//***Describe***
   function dayofyear(d) {   // d is a Date object
     var yn = d.getFullYear();
     var mn = d.getMonth();
@@ -73,7 +90,6 @@
     return ddiff+2;
   }
 
-  var data = [];
   // dictionary 'counts' has keys 0-53
   // values of 'counts' are dictionaries which hold counts of distance
   // used for frequency data in graph 2
@@ -82,6 +98,7 @@
     counts[i] = {0: 0, 10000000: 0, 20000000: 0, 30000000: 0, 40000000: 0, 50000000: 0, 60000000: 0};
   }
 
+  //***DESCRIBE***
   // code for following function taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
   (function() {
   /**
@@ -131,16 +148,15 @@
     }
   })();
 
-  var unit = "feet";
+ //***DESCRIBE***//
   function processJSON(json) {
-    console.log(json);
     $.each(json["near_earth_objects"], function(k1, v1) {
       $.each(json["near_earth_objects"][k1], function(k2, v2) {
         var obj = {};
         obj.name = v2["name"];
         var minDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_min"],
             maxDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_max"];
-        obj.diameter = minDiameter+maxDiameter/2;
+        obj.diameter = minDiameter+maxDiameter/2; //get average diameter estimation
         obj.date = dayofyear(new Date(k1));
         var week = Math.ceil((obj.date / 371)*53);
         var roundedDistance = Math.floor10(v2["close_approach_data"][0]["miss_distance"]["miles"], 7);
@@ -152,11 +168,11 @@
     });
   }
 
+  //***DESCRIBE***//
   console.log("Loading Data...")
   var numWeeks = 53;
-  // var numWeeks = 10;
-  for(var i=1; i<=numWeeks; i++) {
 
+  for(var i=1; i<=numWeeks; i++) {
     $.ajax({
       url: pad(i,2)+".json",
       async: false,
@@ -170,8 +186,6 @@
   console.log("Done.")
   console.log(data);
 
-var tenMilData = [],
-    fiveMilData =[];
 for (var i=0; i<data.length; i++) {
   if (data[i].miss_distance <= 10000000) {
     tenMilData.push(data[i]);
@@ -182,6 +196,7 @@ for (var i=0; i<data.length; i++) {
     fiveMilData.push(data[i]);
   }
 }
+
 </script>
 
 <script>
@@ -413,7 +428,8 @@ function makeGraph(div, data, maxDist) {
 
 makeGraph("#graph1output", data, 60000000)
 makeGraph("#graph2output", tenMilData, 15000000)
-makeGraph("#graph3output", fiveMilData, 6000000)
+makeGraph("#graph3output", fiveMilData, 5000000)
+makeGraph("#graph4output", fiveMilData, 1000000)
 </script>
 
 <script>
@@ -509,6 +525,7 @@ makeGraph("#graph3output", fiveMilData, 6000000)
       }
     }
   }
+
   svg.append("text")
   .attr("x", 510)
   .attr("y", 760)
