@@ -491,18 +491,21 @@ function makeGraph(div, data, maxDist, type) {
         .attr("y1", 0)
         .attr("y2", coords[1])
         .attr("transform", "translate(" + coords + ")")
-        .attr("fill", "green")
+        .attr("stroke", "green")
         .attr("class", "highlight-line");
       }
       drawTextOnPoint(minDistPoint);
+      drawTextOnPoint(maxDistPoint);
+      drawTextOnPoint(minDiamPoint);
+      drawTextOnPoint(maxDiamPoint);
+      drawTextOnPoint(minVeloPoint);
+      drawTextOnPoint(maxVeloPoint);
     }
 }
 d3.selectAll(".highlight-line").moveToFront();
-makeGraph("#graph1output", data, 60000000, "linear")
-makeGraph("#graph2output", data, 10000000000, "log")
-makeGraph("#graph3output", data, 10000000000, "highlight")
-// makeGraph("#graph4output", oneMilData, 1500000)
-// makeGraph("#graph5output", halfMilData, 600000)
+makeGraph("#graph1output", data, 60000000, "linear");
+makeGraph("#graph2output", data, 10000000000, "log");
+makeGraph("#graph3output", data, 10000000000, "highlight");
 </script>
 
 <script>
