@@ -489,8 +489,27 @@ function makeGraph(div, data, maxDist, type) {
           .attr("cx", "0")
           .attr("cy", "0")
           .attr("fill", "none")
-          .attr("stroke", "#FFFFFF")
+          .attr("stroke", "#FFFFFF");
+    if (type == "highlight") {
+
+      function drawTextOnPoint(object) {
+        console.log(minDistPoint);
+        var r = distScale(object.miss_distance), theta = dateScale(object.date);
+        var coords = getPolarCoords(r, theta);
+
+        svg.append("line")
+        .attr("x1", 0)
+        .attr("x2", coords[0])
+        .attr("y1", 0)
+        .attr("y2", coords[1])
+        .attr("transform", "translate(" + coords + ")")
+        .attr("fill", "green")
+        .attr("class", "highlight-line");
+      }
+      drawTextOnPoint(minDistPoint);
+    }
 }
+d3.selectAll(".highlight-line").moveToFront();
 makeGraph("#graph1output", data, 60000000, "linear")
 makeGraph("#graph2output", data, 10000000000, "log")
 makeGraph("#graph3output", data, 10000000000, "highlight")
