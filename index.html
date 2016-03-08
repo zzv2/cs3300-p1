@@ -237,11 +237,23 @@ function makeGraph(div, data, maxDist, linear) {
       .attr("r", radius)
       .attr("id", "#background-circle")
       .attr("fill", "#000000")
-  var gr = svg.append("g")
-    .attr("class", "r axis")
-    .selectAll("g")
-    .data(r.ticks(5).slice(1))
-    .enter().append("g");
+
+  var gr;
+
+  if (linear) {
+    gr = svg.append("g")
+      .attr("class", "r axis")
+      .selectAll("g")
+      .data(r.ticks(5).slice(1))
+      .enter().append("g");
+  }
+  else {
+    gr = svg.append("g")
+      .attr("class", "r axis")
+      .selectAll("g")
+      .data(r.ticks(5).slice(1))
+      .enter().append("g");
+  }
   gr.append("circle")
     .attr("r", r)
   var ga = svg.append("g")
@@ -313,7 +325,7 @@ function makeGraph(div, data, maxDist, linear) {
   else {
     distScale = d3.scale.log()
       .domain([1,maxDist])
-      .range([0, circleOuter + 65]);
+      .range([0, circleOuter]);
   }
 
   var dateScale = d3.scale.linear()
