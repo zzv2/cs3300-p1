@@ -381,7 +381,7 @@ function makeGraph(div, data, maxDist, type) {
     })
     .attr( 'r', function(d) { return diameterScale(d.diameter) })
     .attr("fill", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? colorScale(d.velocity) : "rgba(130,130,130,.5)"})
-    .attr("id", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? "highlighted" : "none"});
+    .attr("id", function(d) { return (type == "highlight" && d.highlight == false) ? "highlighted" : "none"});
     d3.selectAll("#highlighted").moveToFront();
     var distAxis = d3.svg.axis()
       .scale(distScale)
@@ -457,17 +457,16 @@ function makeGraph(div, data, maxDist, type) {
     if (type == "highlight") {
 
       function drawTextOnPoint(object) {
-        console.log(minDistPoint);
         var r = distScale(object.miss_distance), theta = dateScale(object.date);
         var coords = getPolarCoords(r, theta);
 
         svg.append("line")
         .attr("x1", 0)
-        .attr("x2", coords[0])
+        .attr("x2", -50)
         .attr("y1", 0)
-        .attr("y2", coords[1])
+        .attr("y2", -25)
         .attr("transform", "translate(" + coords + ")")
-        .attr("stroke", "green")
+        .attr("stroke", "#A2FF5E")
         .attr("class", "highlight-line");
       }
       drawTextOnPoint(minDistPoint);
