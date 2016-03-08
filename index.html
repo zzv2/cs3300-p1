@@ -583,7 +583,7 @@ function makeGraph(div, data, maxDist, type) {
             if (attribute == "miss_distance") {
                 objectAttribute = object.miss_distance;
             } else if (attribute == "diameter") {
-                objectAttribute = object.diameter;
+                objectAttribute = object.diameter * 5280;
             } else if (attribute == "velocity") {
                 objectAttribute = object.velocity;
             }
@@ -630,8 +630,8 @@ function makeGraph(div, data, maxDist, type) {
         }
         drawTextOnPoint(minDistPoint, "Min. Distance: ", " miles", -100, -30, "miss_distance");
         drawTextOnPoint(maxDistPoint, "Max. Distance: ", " miles", -50, -50, "miss_distance");
-        drawTextOnPoint(minDiamPoint, "Min. Diameter: ", " miles", 150, 100, "diameter");
-        drawTextOnPoint(maxDiamPoint, "Max. Diameter: ", " miles", -260, -40, "diameter");
+        drawTextOnPoint(minDiamPoint, "Min. Diameter: ", " feet", 150, 100, "diameter");
+        drawTextOnPoint(maxDiamPoint, "Max. Diameter: ", " feet", -260, -40, "diameter");
         drawTextOnPoint(minVeloPoint, "Min. Velocity: ", " mph", 90, -220, "velocity");
         drawTextOnPoint(maxVeloPoint, "Max. Velocity: ", " mph", -190, 50, "velocity");
     }
