@@ -343,11 +343,6 @@ function makeGraph(div, data, maxDist, linear) {
   
   for (var i=0; i<data.length; i++) {
     var obj = data[i];
-    velocityData.push(obj.velocity);
-    dateData.push(obj.date);
-    diameterData.push(obj.diameter);
-    distanceData.push(obj.miss_distance);
-    circleData.push(obj);
 
     if (obj.miss_distance == minDistance) {
       minDistPoint = obj;
