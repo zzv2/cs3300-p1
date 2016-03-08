@@ -320,7 +320,7 @@ p {
     max-width: 100px;
 }
 
-.break .tab {
+/*.break .tab {
     background-image: url(../images/line.png);
     height: 6px;
     width: 100%;
@@ -430,17 +430,10 @@ footer p {
 
 #eqp p .button-main i {
     display: none;
-}
-
-/*#fest {*/
-    /*background: #2F4050;*/
-    /*background: #000000; //theme1*/
-    /*background-image: url('../img/outer-space.jpg');*/
-    /*http://wallpaperstock.net/stars-in-outer-space_wallpapers_34707_1920x1080.jpg*/
-/*}*/
+}*/
 
 #fest h2 {
-    color: #AFAFAF;
+    color: #A76CFF;
 }
 
 #fest h3 {
@@ -451,7 +444,7 @@ footer p {
     color: #ffffff;
 }
 
-#fest p .button-main {
+/*#fest p .button-main {
     color: #fff;
     background: #048aba;
     padding-left: 2em;
@@ -495,7 +488,7 @@ footer p {
 
 #fruit p .button-main i {
     display: none;
-}
+}*/
 
 .displays {
     padding: 3.5em 0;
@@ -538,7 +531,7 @@ footer p {
     text-align: center;
 }
 
-#contact {
+/*#contact {
     background: #048aba;
 }
 
@@ -549,7 +542,7 @@ footer p {
 header h2 {
     color: #048aba;
     font-size: 28px;
-}
+}*/
 
 
 
@@ -585,10 +578,6 @@ header h2 {
 .axis :nth-of-type(2) circle {
   background-color: #000000;
 }
-/*
-:last-of-type circle {
-  fill: #000000;
-}*/
 
 .line {
   fill: none;

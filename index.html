@@ -245,7 +245,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("r", r)
 
     //radial lines
-    var ga = svg.append("g")
+    var g = svg.append("g")
         .attr("class", "a axis")
         .selectAll("g")
         .data(d3.range(0, 360, 15))
@@ -254,7 +254,7 @@ function makeGraph(div, data, maxDist, type) {
             return "rotate(" + -d + ")";
         });
 
-    ga.append("line")
+    g.append("line")
         .attr("x2", function(d) {
             if (d % 30 == 0) {
                 return radius - 10
@@ -262,7 +262,7 @@ function makeGraph(div, data, maxDist, type) {
         });
 
     //add text along outer ring
-    ga.append("text")
+    g.append("text")
         .attr("x", radius)
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
@@ -287,12 +287,14 @@ function makeGraph(div, data, maxDist, type) {
             }
         });
 
+    //Initialize variables to store various datas
     var circleData = [],
         distanceData = [],
         diameterData = [],
         dateData = [],
         velocityData = [];
 
+    //Store data
     for (var i = 0; i < data.length; i++) {
         var obj = data[i];
         velocityData.push(obj.velocity);
@@ -302,13 +304,6 @@ function makeGraph(div, data, maxDist, type) {
         circleData.push(obj);
     }
 
-    var line = d3.svg.line.radial()
-        .radius(function(d) {
-            return r(d[1]);
-        })
-        .angle(function(d) {
-            return -d[0] + Math.PI / 2;
-        });
 
     function getMinMax(data) {
         return [Math.min.apply(Math, data), Math.max.apply(Math, data)];
@@ -334,21 +329,18 @@ function makeGraph(div, data, maxDist, type) {
         return [Math.min.apply(Math, this), Math.max.apply(Math, this)];
     }
 
-    var minDistance = distanceData.min();
-    var maxDistance = distanceData.max();
-    var avgDistance = distanceData.mean();
-
-    var minDiam = diameterData.min();
-    var maxDiam = diameterData.max();
-    var avgDiam = diameterData.mean();
-
-    var minVelocity = velocityData.min();
-    var maxVelocity = velocityData.max();
-    var avgVelocity = velocityData.mean();
-
-    var minDistPoint, maxDistPoint, avgDistPoint;
-    var minDiamPoint, maxDiamPoint, avgDiamPoint;
-    var minVeloPoint, maxVeloPoint, avgVeloPoint;
+    var minDistance = distanceData.min(),
+        maxDistance = distanceData.max(),
+        avgDistance = distanceData.mean(),
+        minDiam = diameterData.min(),
+        maxDiam = diameterData.max(),
+        avgDiam = diameterData.mean(),
+        minVelocity = velocityData.min(),
+        maxVelocity = velocityData.max(),
+        avgVelocity = velocityData.mean(),
+        minDistPoint, maxDistPoint, avgDistPoint,
+        minDiamPoint, maxDiamPoint, avgDiamPoint,
+        minVeloPoint, maxVeloPoint, avgVeloPoint;
 
     for (var i = 0; i < data.length; i++) {
         var object = data[i];
@@ -369,6 +361,7 @@ function makeGraph(div, data, maxDist, type) {
             maxVeloPoint = object;
         }
     }
+
     minDistPoint.highlight = false;
     maxDistPoint.highlight = false;
     minDiamPoint.highlight = false;
@@ -410,12 +403,10 @@ function makeGraph(div, data, maxDist, type) {
         .append("circle")
         .attr("class", "point")
         .attr("transform", function(d) {
-            // console.log(d.point);
             var r = distScale(d.miss_distance),
                 theta = dateScale(d.date);
-            var coords = getPolarCoords(r, theta);
-            // console.log(coords);
-            return "translate(" + coords + ")"
+            var coordinates = getPolarCoords(r, theta);
+            return "translate(" + coordinates + ")"
         })
         .attr('r', function(d) {
             return diameterScale(d.diameter)
