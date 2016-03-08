@@ -292,6 +292,7 @@ function makeGraph(div, data, maxDist, linear) {
     distanceData.push(obj.miss_distance);
     circleData.push(obj);
   }
+
   var line = d3.svg.line.radial()
     .radius(function(d) {
       return r(d[1]);
@@ -335,6 +336,35 @@ function makeGraph(div, data, maxDist, linear) {
   var minVelocity = velocityData.min();
   var maxVelocity = velocityData.max();
   var avgVelocity = velocityData.mean();
+
+  var minDistPoint, maxDistPoint, avgDistPoint;
+  var minDiamPoint, maxDiamPoint, avgDiamPoint;
+  var minVeloPoint, maxVeloPoint, avgVeloPoint;
+  
+  for (var i=0; i<data.length; i++) {
+    var obj = data[i];
+    velocityData.push(obj.velocity);
+    dateData.push(obj.date);
+    diameterData.push(obj.diameter);
+    distanceData.push(obj.miss_distance);
+    circleData.push(obj);
+
+    if (obj.miss_distance == minDistance) {
+      minDistPoint = obj;
+    } else if (obj.miss_distance = maxDistance) {
+      maxDistPoint = obj;
+    }
+    if (obj.diameter == minDiam) {
+      minDiamPoint = obj;
+    } else if (obj.diameter = maxDiam) {
+      maxDiamPoint = obj;
+    }
+    if (obj.velocity == minVelocity) {
+      minVeloPoint = obj;
+    } else if (obj.velocity == maxVelocity) {
+      maxVeloPoint = obj;
+    } 
+  }
 
   var diameterScale = d3.scale.linear()
     .domain(diameterData.min_max())
