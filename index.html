@@ -157,6 +157,7 @@ var data = [],  //will store all of the data returned
       };
     }
   })();
+
  //***DESCRIBE***//
   function processJSON(json) {
     $.each(json["near_earth_objects"], function(k1, v1) {
@@ -307,9 +308,34 @@ function makeGraph(div, data, maxDist, linear) {
   Array.prototype.min = function(){
     return Math.min.apply(Math, this);
   }
+  Array.prototype.mean = function(){
+    var total = 0;
+    var count = 0;
+    for (i=0; i< this.length; i++) {
+      if (this[i] != "max" && this[i] != "min" && this[i] != "min_max") {
+        total += Number(this[i]);
+        count += 1;
+      }
+    }
+    console.log(total, count);
+    return total / count;
+  }
   Array.prototype.min_max = function(){
     return [Math.min.apply(Math, this), Math.max.apply(Math, this)];
   }
+
+  var minDistance = distanceData.min();
+  var maxDistance = distanceData.max();
+  var avgDistance = distanceData.mean();
+  
+  var minDiam = diameterData.min();
+  var maxDiam = diameterData.max();
+  var avgDiam = diameterData.mean();
+
+  var minVelocity = velocityData.min();
+  var maxVelocity = velocityData.max();
+  var avgVelocity = velocityData.mean();
+
   var diameterScale = d3.scale.linear()
     .domain(diameterData.min_max())
     .range([2, 10]);
