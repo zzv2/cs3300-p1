@@ -31,7 +31,7 @@
                 <p class="graph-desc">Did you notice anything strange about the graph above? It seems there are a lot of objects really close to Earth.<br>But DON’T WORRY—we are not being attacked by asteroids. And in fact, none of these asteroids are deemed hazardous.</p>
                 <p class="graph-desc">The second graph displayed below should put you more at ease. This particular graph is identical to the latter, except this time, the radial axis (distance from Earth) is scaled logarithmically. For reference, the moon’s orbit is displayed with a white ring and the average satellite’s orbit is displayed with a purple ring. Now notice how a majority of the near earth objects are at least one million miles away—which is approximately 4 times further than the distance from Earth to the moon! </p>
                 <div id="graph2output"></div>
-                 <p class="graph-desc">But which points are the important ones? To help better make sense of all the clutter that is outer space, the following graph highlights some asteroid with the most extreme properties (distance, diameter, velocity). </p>
+                 <p class="graph-desc">But which points are the important ones? To help better make sense of all the clutter that is outer space, the following graph highlights some asteroids with the most extreme properties (distance, diameter, velocity). </p>
                 <div id="graph3output"></div>
                 <p>FOR JOHN</p>
                 <div id="graph4output"></div>
@@ -520,7 +520,6 @@ function makeGraph(div, data, maxDist, type) {
                     .attr("class", "highlight-text")
                     .attr("transform", "translate(" + coords + ")")
                     .style("padding", 10)
-                    // .text(text + objectAttribute + unit);
                     .append("tspan")
                       .attr("x", x)
                       .attr("dy", "1.4em")
@@ -539,7 +538,6 @@ function makeGraph(div, data, maxDist, type) {
                     .attr("class", "highlight-text")
                     .attr("transform", "translate(" + coords + ")")
                     .style("padding", 10)
-                    // .text(text + objectAttribute + unit);
                     .append("tspan")
                       .attr("x", x)
                       .attr("dy", "1.4em")
