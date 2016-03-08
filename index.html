@@ -158,6 +158,7 @@ var data = [],  //will store all of the data returned
     }
   })();
 
+  // code for following function taken from http://bl.ocks.org/eesur/4e0a69d57d3bfc8a82c2
   d3.selection.prototype.moveToFront = function() {  
     return this.each(function(){
       this.parentNode.appendChild(this);
