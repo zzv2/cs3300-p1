@@ -40,19 +40,23 @@
         </div>
      </div>
   </section>
+
+<!-- Getting our data -->
 <script>
 //Initialize global variables
 var data = [], //will store all of the data returned
     tenMilData = [], //stores data representing asteroids with a distance of 10 million or less
     fiveMilData = [], //stores data representing asteroids with a distance of 5 million or less
     oneMilData = [] //stores data representing asteroids with a distance of 1 million or less
-halfMilData = []; //stores data representing asteroids with a distance less than 0.5 million
+    halfMilData = []; //stores data representing asteroids with a distance less than 0.5 million
+
 //***Describe***
 function pad(n, width, z) {
     z = z || '0';
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
+
 //***Describe***
 function dayofyear(d) { // d is a Date object
     var yn = d.getFullYear();
@@ -63,6 +67,7 @@ function dayofyear(d) { // d is a Date object
     var ddiff = Math.round((d2 - d1) / 864e5);
     return ddiff + 2;
 }
+
 // dictionary 'counts' has keys 0-53
 // values of 'counts' are dictionaries which hold counts of distance (in increments of 1,000,000)
 // used for frequency data in graph 2
@@ -73,6 +78,7 @@ for (var i = 1; i <= 53; i++) {
         counts[i][j] = 0;
     }
 }
+
 // code for following function taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
 // floor10 is used to round all miss distances down to the nearest million (to group data for heat map)
 // round10 is used to round to 2 decimal places in highlight graph
@@ -145,6 +151,7 @@ function processJSON(json) {
         });
     });
 }
+
 //***DESCRIBE***//
 console.log("Loading Data...")
 var numWeeks = 53;
@@ -159,21 +166,29 @@ for (var i = 1; i <= numWeeks; i++) {
     });
 }
 console.log("Done.")
+
+//stores all of the asteroids with a miss_distance <= 10000000 miles in tenMilData
 for (var i = 0; i < data.length; i++) {
     if (data[i].miss_distance <= 10000000) {
         tenMilData.push(data[i]);
     }
 }
+
+//store all of the asteroids with a miss_distance <= 5000000 miles in tenMilData
 for (var i = 0; i < data.length; i++) {
     if (data[i].miss_distance <= 5000000) {
         fiveMilData.push(data[i]);
     }
 }
+
+//store all of the asteroids with a miss_distance <= 1000000 miles in tenMilData
 for (var i = 0; i < data.length; i++) {
     if (data[i].miss_distance <= 1000000) {
         oneMilData.push(data[i]);
     }
 }
+
+//store all of the asteroids with a miss_distance <= 500000 miles in tenMilData
 for (var i = 0; i < data.length; i++) {
     if (data[i].miss_distance <= 500000) {
         halfMilData.push(data[i]);
@@ -181,13 +196,17 @@ for (var i = 0; i < data.length; i++) {
 }
 </script>
 
+<!-- Creating the polar graphs -->
 <script>
+
 var width = 800,
     height = 1000,
     radius = Math.min(width, height) / 2 - 80;
+
 var r = d3.scale.linear()
     .domain([0, 1])
     .range([0, radius]);
+
 var line = d3.svg.line.radial()
     .radius(function(d) {
         return r(d[1]);
@@ -196,7 +215,14 @@ var line = d3.svg.line.radial()
         return -d[0] + Math.PI / 2;
     });
 
+//Creates a polar graph
+//div - paramater that takes in a specific div id to append polar graphs
+//data - paramater specifying to be graphed
+//maxDist - paramater speciying the maximum distance of asteroid
+//type - paramater specifiying a linear or log scale
 function makeGraph(div, data, maxDist, type) {
+
+  //create svg
     var svg = d3.select(div).append("svg")
         .attr("width", width + 200)
         .attr("height", height)
@@ -207,23 +233,18 @@ function makeGraph(div, data, maxDist, type) {
         .attr("id", "#background-circle")
         .attr("fill", "#000000")
 
-    var gr;
+    //creat graph
+    graph = svg.append("g")
+        .attr("class", "r axis")
+        .selectAll("g")
+        .data(r.ticks(5).slice(1))
+        .enter().append("g");
 
-    if (type == "linear") {
-        gr = svg.append("g")
-            .attr("class", "r axis")
-            .selectAll("g")
-            .data(r.ticks(5).slice(1))
-            .enter().append("g");
-    } else {
-        gr = svg.append("g")
-            .attr("class", "r axis")
-            .selectAll("g")
-            .data(r.ticks(5).slice(1))
-            .enter().append("g");
-    }
-    gr.append("circle")
+    //create polar circles
+    graph.append("circle")
         .attr("r", r)
+
+    //radial lines
     var ga = svg.append("g")
         .attr("class", "a axis")
         .selectAll("g")
@@ -232,12 +253,15 @@ function makeGraph(div, data, maxDist, type) {
         .attr("transform", function(d) {
             return "rotate(" + -d + ")";
         });
+
     ga.append("line")
         .attr("x2", function(d) {
             if (d % 30 == 0) {
                 return radius - 10
             }
         });
+
+    //add text along outer ring
     ga.append("text")
         .attr("x", radius)
         .attr("dy", ".35em")
@@ -262,11 +286,13 @@ function makeGraph(div, data, maxDist, type) {
                 return months[d].toUpperCase()
             }
         });
-    var circleData = [];
-    var distanceData = [];
-    var diameterData = [];
-    var dateData = [];
-    var velocityData = [];
+
+    var circleData = [],
+        distanceData = [],
+        diameterData = [],
+        dateData = [],
+        velocityData = [];
+
     for (var i = 0; i < data.length; i++) {
         var obj = data[i];
         velocityData.push(obj.velocity);
@@ -418,7 +444,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("fill", "black")
         .style("text-anchor", "middle")
         .text("Distance from Earth (mi)");
-    
+
     // color legend
     var gradient = svg.append("defs")
         .append("linearGradient")
