@@ -163,7 +163,6 @@ var data = [],  //will store all of the data returned
     });
   }
   console.log("Done.")
-  console.log(data);
 for (var i=0; i<data.length; i++) {
   if (data[i].miss_distance <= 10000000) {
     tenMilData.push(data[i]);
@@ -290,7 +289,6 @@ function makeGraph(div, data, maxDist, type) {
         count += 1;
       }
     }
-    console.log(total, count);
     return total / count;
   }
   Array.prototype.min_max = function(){
@@ -344,7 +342,6 @@ function makeGraph(div, data, maxDist, type) {
     .range([2, 10]);
   var circleInner = 10;
   var circleOuter = radius;
-  console.log(distanceData.max());
   var distScale;
   if (type == "linear") {
     distScale = d3.scale.linear()
@@ -456,35 +453,62 @@ function makeGraph(div, data, maxDist, type) {
           .attr("stroke", "#FFFFFF");
     if (type == "highlight") {
 
-      function drawTextOnPoint(object, text, unit) {
+      function drawTextOnPoint(object, text, unit, x, y, attribute) {
         var r = distScale(object.miss_distance), theta = dateScale(object.date);
         var coords = getPolarCoords(r, theta);
 
         svg.append("line")
         .attr("x1", 0)
         // .attr("x2", -50)
-        .attr("x2", coords[0])
+        .attr("x2", x)
         .attr("y1", 0)
         // .attr("y2", -25)
-        .attr("y2", coords[1])
+        .attr("y2", y)
         .attr("transform", "translate(" + coords + ")")
         .attr("stroke", "#A2FF5E")
         .attr("class", "highlight-line");
 
-        svg.append("text")
-        .attr("x", coords[0])
-        .attr("y", coords[1])
-        .attr("stroke", "#A2FF5E")
-        .attr("class", "highlight-text")
-        .attr("transform", "translate(" + coords + ")")
-        .text(text + Math.round10(object.miss_distance, -2) + unit);
+        var objectAttribute;
+        if (attribute == "miss_distance") {
+          objectAttribute = object.miss_distance;
+        } else if (attribute == "diameter") {
+          objectAttribute = object.diameter;
+        } else if (attribute == "velocity") {
+          objectAttribute = object.velocity;
+        }
+        objectAttribute = Math.round10(objectAttribute, -2);
+        objectAttribute = objectAttribute.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        if (y > 0) {
+          svg.append("text")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("stroke", "#A2FF5E")
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "before-edge")
+          .attr("class", "highlight-text")
+          .attr("transform", "translate(" + coords + ")")
+          .style("padding", 10)
+          .text(text + objectAttribute + unit);
+        } else {
+          svg.append("text")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("stroke", "#A2FF5E")
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "after-edge")
+          .attr("class", "highlight-text")
+          .attr("transform", "translate(" + coords + ")")
+          .style("padding", 10)
+          .text(text + objectAttribute + unit);
+        }
       }
-      drawTextOnPoint(minDistPoint, "Min Dist: ", " miles");
-      drawTextOnPoint(maxDistPoint, "Max Dist: ", " miles");
-      drawTextOnPoint(minDiamPoint, "Min Diam: ", " feet");
-      drawTextOnPoint(maxDiamPoint, "Max Diam: ", " feet");
-      drawTextOnPoint(minVeloPoint, "Min Velo: ", " mph");
-      drawTextOnPoint(maxVeloPoint, "Max Velo: ", " mph");
+      drawTextOnPoint(minDistPoint, "Min Dist: ", " miles", -100, -30, "miss_distance");
+      drawTextOnPoint(maxDistPoint, "Max Dist: ", " miles", -50, -50, "miss_distance");
+      drawTextOnPoint(minDiamPoint, "Min Diam: ", " feet", 150, 100, "diameter");
+      drawTextOnPoint(maxDiamPoint, "Max Diam: ", " feet", -260, -40, "diameter");
+      drawTextOnPoint(minVeloPoint, "Min Velo: ", " mph", 90, -220, "velocity");
+      drawTextOnPoint(maxVeloPoint, "Max Velo: ", " mph", -190, 50, "velocity");
     }
 }
 d3.selectAll(".highlight-line").moveToFront();
