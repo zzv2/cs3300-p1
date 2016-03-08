@@ -600,6 +600,9 @@ text {
   stroke: #327780;
   stroke-width: 1;
 }
+.highlight-text {
+    stroke: #A2FF5E;
+}
 
 .colorAxis line, .colorAxis path, .distanceLabel, .tick text {
   stroke: #A2FF5E !important;

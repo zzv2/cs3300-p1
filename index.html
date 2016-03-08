@@ -381,7 +381,7 @@ function makeGraph(div, data, maxDist, type) {
     })
     .attr( 'r', function(d) { return diameterScale(d.diameter) })
     .attr("fill", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? colorScale(d.velocity) : "rgba(130,130,130,.5)"})
-    .attr("id", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? "highlighted" : "none"});
+    .attr("id", function(d) { return (type == "highlight" && d.highlight == false) ? "highlighted" : "none"});
     d3.selectAll("#highlighted").moveToFront();
     var distAxis = d3.svg.axis()
       .scale(distScale)
@@ -456,26 +456,34 @@ function makeGraph(div, data, maxDist, type) {
           .attr("stroke", "#FFFFFF");
     if (type == "highlight") {
 
-      function drawTextOnPoint(object) {
-        console.log(minDistPoint);
+      function drawTextOnPoint(object, text, unit) {
         var r = distScale(object.miss_distance), theta = dateScale(object.date);
         var coords = getPolarCoords(r, theta);
 
         svg.append("line")
         .attr("x1", 0)
+        // .attr("x2", -50)
         .attr("x2", coords[0])
         .attr("y1", 0)
+        // .attr("y2", -25)
         .attr("y2", coords[1])
         .attr("transform", "translate(" + coords + ")")
-        .attr("stroke", "green")
+        .attr("stroke", "#A2FF5E")
         .attr("class", "highlight-line");
+
+        svg.append("text")
+        .attr("x", coords[0])
+        .attr("y", coords[1])
+        .attr("stroke", "#A2FF5E")
+        .attr("class", "highlight-text")
+        .text(text + Math.round10(object.miss_distance, -2) + unit);
       }
-      drawTextOnPoint(minDistPoint);
-      drawTextOnPoint(maxDistPoint);
-      drawTextOnPoint(minDiamPoint);
-      drawTextOnPoint(maxDiamPoint);
-      drawTextOnPoint(minVeloPoint);
-      drawTextOnPoint(maxVeloPoint);
+      drawTextOnPoint(minDistPoint, "Min Dist: ", " miles");
+      drawTextOnPoint(maxDistPoint, "Max Dist: ", " miles");
+      drawTextOnPoint(minDiamPoint, "Min Diam: ", " feet");
+      drawTextOnPoint(maxDiamPoint, "Max Diam: ", " feet");
+      drawTextOnPoint(minVeloPoint, "Min Velo: ", " mph");
+      drawTextOnPoint(maxVeloPoint, "Max Velo: ", " mph");
     }
 }
 d3.selectAll(".highlight-line").moveToFront();
