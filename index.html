@@ -520,18 +520,34 @@ function makeGraph(div, data, maxDist, type) {
                     .attr("class", "highlight-text")
                     .attr("transform", "translate(" + coords + ")")
                     .style("padding", 10)
-                    .text(text + objectAttribute + unit);
+                    // .text(text + objectAttribute + unit);
+                    .append("tspan")
+                      .attr("x", x)
+                      .attr("dy", "1.4em")
+                      .text(text + objectAttribute + unit)
+                    .append("tspan")
+                      .attr("x", x)
+                      .attr("dy", "1.4em")
+                      .text("Name: " + object.name);
             } else {
                 svg.append("text")
                     .attr("x", x)
-                    .attr("y", y)
+                    .attr("y", y - 50)
                     .attr("stroke", "#A2FF5E")
                     .attr("text-anchor", "middle")
                     .attr("alignment-baseline", "after-edge")
                     .attr("class", "highlight-text")
                     .attr("transform", "translate(" + coords + ")")
                     .style("padding", 10)
-                    .text(text + objectAttribute + unit);
+                    // .text(text + objectAttribute + unit);
+                    .append("tspan")
+                      .attr("x", x)
+                      .attr("dy", "1.4em")
+                      .text(text + objectAttribute + unit)
+                    .append("tspan")
+                      .attr("x", x)
+                      .attr("dy", "1.4em")
+                      .text("Name: " + object.name);
             }
         }
         drawTextOnPoint(minDistPoint, "Min. Distance: ", " miles", -100, -30, "miss_distance");
