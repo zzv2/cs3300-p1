@@ -158,6 +158,12 @@ var data = [],  //will store all of the data returned
     }
   })();
 
+  d3.selection.prototype.moveToFront = function() {  
+    return this.each(function(){
+      this.parentNode.appendChild(this);
+    });
+  };
+
  //***DESCRIBE***//
   function processJSON(json) {
     $.each(json["near_earth_objects"], function(k1, v1) {
@@ -173,6 +179,7 @@ var data = [],  //will store all of the data returned
         counts[week][roundedDistance] += 1;
         obj.miss_distance = v2["close_approach_data"][0]["miss_distance"]["miles"];
         obj.velocity = v2["close_approach_data"][0]["relative_velocity"]["miles_per_hour"];
+        obj.highlight = true;
         data.push(obj);
       });
     });
@@ -228,7 +235,7 @@ for (var i=0; i<data.length; i++) {
     .angle(function(d) {
       return -d[0] + Math.PI / 2;
     });
-function makeGraph(div, data, maxDist, linear) {
+function makeGraph(div, data, maxDist, type) {
   var svg = d3.select(div).append("svg")
     .attr("width", width+200)
     .attr("height", height)
@@ -241,7 +248,7 @@ function makeGraph(div, data, maxDist, linear) {
 
   var gr;
 
-  if (linear) {
+  if (type == "linear") {
     gr = svg.append("g")
       .attr("class", "r axis")
       .selectAll("g")
@@ -342,24 +349,30 @@ function makeGraph(div, data, maxDist, linear) {
   var minVeloPoint, maxVeloPoint, avgVeloPoint;
   
   for (var i=0; i<data.length; i++) {
-    var obj = data[i];
+    var object = data[i];
 
-    if (obj.miss_distance == minDistance) {
-      minDistPoint = obj;
-    } else if (obj.miss_distance = maxDistance) {
-      maxDistPoint = obj;
+    if (object.miss_distance == minDistance) {
+      minDistPoint = object;
+    } else if (object.miss_distance == maxDistance) {
+      maxDistPoint = object;
     }
-    if (obj.diameter == minDiam) {
-      minDiamPoint = obj;
-    } else if (obj.diameter = maxDiam) {
-      maxDiamPoint = obj;
+    if (object.diameter == minDiam) {
+      minDiamPoint = object;
+    } else if (object.diameter == maxDiam) {
+      maxDiamPoint = object;
     }
-    if (obj.velocity == minVelocity) {
-      minVeloPoint = obj;
-    } else if (obj.velocity == maxVelocity) {
-      maxVeloPoint = obj;
+    if (object.velocity == minVelocity) {
+      minVeloPoint = object;
+    } else if (object.velocity == maxVelocity) {
+      maxVeloPoint = object;
     } 
   }
+  minDistPoint.highlight = false;
+  maxDistPoint.highlight = false;
+  minDiamPoint.highlight = false;
+  maxDiamPoint.highlight = false;
+  minVeloPoint.highlight = false;
+  maxVeloPoint.highlight = false;
 
   var diameterScale = d3.scale.linear()
     .domain(diameterData.min_max())
@@ -368,7 +381,7 @@ function makeGraph(div, data, maxDist, linear) {
   var circleOuter = radius;
   console.log(distanceData.max());
   var distScale;
-  if (linear) {
+  if (type == "linear") {
     distScale = d3.scale.linear()
       .domain([0,maxDist])
       .range([0, circleOuter + 65]);
@@ -402,7 +415,9 @@ function makeGraph(div, data, maxDist, linear) {
       return "translate(" + coords + ")"
     })
     .attr( 'r', function(d) { return diameterScale(d.diameter) })
-    .attr("fill", function(d) { return d ? colorScale(d.velocity) : "lightgray"});
+    .attr("fill", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? colorScale(d.velocity) : "rgba(130,130,130,.5)"})
+    .attr("id", function(d) { return (type != "highlight" || (type == "highlight" && d.highlight == false)) ? "highlighted" : "none"});
+    d3.selectAll("#highlighted").moveToFront();
     var distAxis = d3.svg.axis()
       .scale(distScale)
       .orient('bottom')
@@ -475,9 +490,9 @@ function makeGraph(div, data, maxDist, linear) {
           .attr("fill", "none")
           .attr("stroke", "#FFFFFF")
 }
-makeGraph("#graph1output", data, 60000000, true)
-makeGraph("#graph2output", data, 10000000000, false)
-makeGraph("#graph3output", fiveMilData, 6000000, true)
+makeGraph("#graph1output", data, 60000000, "linear")
+makeGraph("#graph2output", data, 10000000000, "log")
+makeGraph("#graph3output", data, 10000000000, "highlight")
 // makeGraph("#graph4output", oneMilData, 1500000)
 // makeGraph("#graph5output", halfMilData, 600000)
 </script>
