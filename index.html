@@ -152,6 +152,8 @@ function processJSON(json) {
     });
 }
 
+var startDate = dayofyear(new Date('2016-03-02'));
+
 //***DESCRIBE***//
 console.log("Loading Data...")
 var numWeeks = 53;
@@ -484,12 +486,28 @@ function makeGraph(div, data, maxDist, type) {
         .attr("cx", "0")
         .attr("cy", "0")
         .attr("fill", "#A2FF5E")
+    // moon reference line
     svg.append("circle")
         .attr("r", distScale(238900))
         .attr("cx", "0")
         .attr("cy", "0")
         .attr("fill", "none")
         .attr("stroke", "#FFFFFF");
+    // satalite reference line
+    svg.append("circle")
+        .attr("r", distScale(1000))
+        .attr("cx", "0")
+        .attr("cy", "0")
+        .attr("fill", "none")
+        .attr("stroke", "purple");
+    // start date reference line
+    var startDateCoords = getPolarCoords(radius, dateScale(startDate));
+    svg.append("line")
+        .attr("x1", 0)
+        .attr("x2", startDateCoords[0])
+        .attr("y1", 0)
+        .attr("y2", startDateCoords[1])
+        .attr("stroke", "#4B27FF")
     if (type == "highlight") {
 
         /**
@@ -698,12 +716,11 @@ svg.append("text")
     .attr("font-size", 20)
     .text("(miles)");
 
-var startDate = dayofyear(new Date('2016-03-02'));
-startDate = startDate / 7;
+startWeek = startDate / 7;
 
 svg.append("line")
-    .attr("x1", xScale(startDate))
-    .attr("x2", xScale(startDate))
+    .attr("x1", xScale(startWeek))
+    .attr("x2", xScale(startWeek))
     .attr("y1", yScale(0) + 4)
     .attr("y2", yScale(50000000) - 6)
     .attr("stroke", "#4B27FF")
