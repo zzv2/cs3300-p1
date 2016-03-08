@@ -476,6 +476,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("y", coords[1])
         .attr("stroke", "#A2FF5E")
         .attr("class", "highlight-text")
+        .attr("transform", "translate(" + coords + ")")
         .text(text + Math.round10(object.miss_distance, -2) + unit);
       }
       drawTextOnPoint(minDistPoint, "Min Dist: ", " miles");
