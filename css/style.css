@@ -597,6 +597,10 @@ text {
   stroke: #A2FF5E !important;
 }
 
+.diameterAxis line, .diameterAxis path, .distanceLabel, .tick text {
+  stroke: #A2FF5E !important;
+}
+
 circle {
   background-color: #000000;
 }

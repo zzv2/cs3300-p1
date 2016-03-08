@@ -137,8 +137,8 @@ function processJSON(json) {
         $.each(json["near_earth_objects"][k1], function(k2, v2) {
             var obj = {};
             obj.name = v2["name"];
-            var minDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_min"],
-                maxDiameter = v2["estimated_diameter"]["feet"]["estimated_diameter_max"];
+            var minDiameter = v2["estimated_diameter"]["miles"]["estimated_diameter_min"],
+                maxDiameter = v2["estimated_diameter"]["miles"]["estimated_diameter_max"];
             obj.diameter = minDiameter + maxDiameter / 2; //get average diameter estimation
             obj.date = dayofyear(new Date(k1));
             var week = Math.ceil((obj.date / 371) * 53);
@@ -455,6 +455,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("offset", "100%")
         .attr("stop-color", stopColor)
         .attr("stop-opacity", 1);
+
     var colorAxisScale = d3.scale.linear()
         .domain([0, 100000])
         .range([0, width / 2]);
@@ -481,11 +482,52 @@ function makeGraph(div, data, maxDist, type) {
         .attr("fill", "none")
         .style("text-anchor", "middle")
         .text("Relative Velocity (mph)");
+
+    // diameter legend
+    var diameterAxisScale = d3.scale.linear()
+        .domain([0,diameterData.max()])
+        .range([0, width / 2]);
+    var diameterAxis = d3.svg.axis()
+        .scale(diameterAxisScale)
+        .orient('bottom')
+        .ticks(5, ",.1s")
+        .tickSize(10, 1);
+    var diameterLegend = svg.append('g')
+        .attr('class', 'diameterAxis')
+        .attr("transform", "translate(" + -width / 4 + "," + width * 0.65 + ")")
+        .call(diameterAxis)
+    // diameterLegend.append("rect")
+    //     .attr("class", "legend")
+    //     .attr("width", width / 2)
+    //     .attr("height", height / 32)
+    //     .attr("transform", "translate(0,-40)")
+    //     .style("fill", "url(#gradient)");
+    function drawDiameterAxisCircles(diameter) {
+      diameterLegend.append("circle")
+        .attr("r", diameterScale(i))
+        .attr("cx", diameterAxisScale(i)-diameterAxisScale(0))
+        .attr("cy", -15)
+        .attr("fill", "#A2FF5E")
+    }
+    for(var i=0; i<=6; i++) {
+      drawDiameterAxisCircles(i);
+    }
+    diameterLegend.append("text")
+        .attr("class", "label")
+        .attr("x", width / 4)
+        .attr("y", 50)
+        .attr("font-size", 14)
+        .attr("fill", "none")
+        .style("text-anchor", "middle")
+        .text("Diameter (mi)");
+
+    // earth reference point
     svg.append("circle")
         .attr("r", "5")
         .attr("cx", "0")
         .attr("cy", "0")
         .attr("fill", "#A2FF5E")
+
     // moon reference line
     svg.append("circle")
         .attr("r", distScale(238900))
@@ -493,6 +535,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("cy", "0")
         .attr("fill", "none")
         .attr("stroke", "#FFFFFF");
+
     // satalite reference line
     svg.append("circle")
         .attr("r", distScale(1000))
@@ -500,6 +543,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("cy", "0")
         .attr("fill", "none")
         .attr("stroke", "purple");
+
     // start date reference line
     var startDateCoords = getPolarCoords(radius, dateScale(startDate));
     svg.append("line")
@@ -508,6 +552,7 @@ function makeGraph(div, data, maxDist, type) {
         .attr("y1", 0)
         .attr("y2", startDateCoords[1])
         .attr("stroke", "#4B27FF")
+
     if (type == "highlight") {
 
         /**
